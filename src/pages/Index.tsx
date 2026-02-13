@@ -3,6 +3,7 @@ import { Search, Bell, ShoppingBag, ChevronRight, Sparkles } from "lucide-react"
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import heroImage from "@/assets/hero-art.jpg";
+import logo from "@/assets/logo.png";
 import { categories, featuredArtworks, artists } from "@/data/mockData";
 import ArtworkCard from "@/components/ArtworkCard";
 import ArtistCard from "@/components/ArtistCard";
@@ -18,11 +19,8 @@ const Index = () => {
       {/* Header */}
       <header className="sticky top-0 z-40 bg-background/90 backdrop-blur-lg border-b border-border">
         <div className="mx-auto flex max-w-lg items-center justify-between px-4 py-3">
-          <div>
-            <h1 className="font-display text-xl font-bold text-foreground">
-              Kalav<span className="text-gradient-gold">app</span>
-            </h1>
-            <p className="text-[10px] tracking-widest text-muted-foreground uppercase">Art • Craft • Culture</p>
+          <div className="flex items-center gap-2">
+            <img src={logo} alt="ArtVPP" className="h-10 w-auto" />
           </div>
           <div className="flex items-center gap-3">
             <button className="relative rounded-full bg-card p-2 text-muted-foreground transition-colors hover:text-foreground">
@@ -146,7 +144,10 @@ const Index = () => {
             <p className="mt-1 text-sm text-primary-foreground/80">
               Get custom artwork created by India's finest artists, tailored to your vision.
             </p>
-            <button className="mt-3 rounded-full bg-background px-4 py-2 text-xs font-semibold text-primary transition-transform hover:scale-105">
+            <button
+              onClick={() => navigate("/commissions")}
+              className="mt-3 rounded-full bg-background px-4 py-2 text-xs font-semibold text-primary transition-transform hover:scale-105"
+            >
               Start a Commission
             </button>
           </div>
