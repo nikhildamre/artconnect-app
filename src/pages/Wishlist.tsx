@@ -1,22 +1,125 @@
-import { Heart } from "lucide-react";
+import { Heart, ShoppingCart, Trash2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { featuredArtworks } from "@/data/mockData";
+import { useImageForArtwork } from "@/hooks/useArtworkImages";
+import { toast } from "sonner";
 import BottomNav from "@/components/BottomNav";
 
-const Wishlist = () => (
-  <div className="min-h-screen bg-background pb-20">
-    <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur-lg">
-      <div className="mx-auto max-w-lg px-4 py-3">
-        <h1 className="font-display text-lg font-bold text-foreground">Wishlist</h1>
+const formatPrice = (price: number) =>
+  new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(price);
+
+const Wishlist = () => {
+  const navigate = useNavigate();
+  const [wishlistIds, setWishlistIds] = useState<string[]>(["1", "3", "5", "6"]);
+
+  const wishlistItems = featuredArtworks.filter((a) => wishlistIds.includes(a.id));
+
+  const removeFromWishlist = (id: string) => {
+    setWishlistIds((ids) => ids.filter((i) => i !== id));
+    toast.success("Removed from wishlist");
+  };
+
+  const addToCart = (id: string) => {
+    toast.success("Added to cart!");
+    removeFromWishlist(id);
+  };
+
+  if (wishlistItems.length === 0) {
+    return (
+      <div className="min-h-screen bg-background pb-20">
+        <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur-lg">
+          <div className="mx-auto max-w-lg px-4 py-3">
+            <h1 className="font-display text-lg font-bold text-foreground">Wishlist</h1>
+          </div>
+        </header>
+        <div className="flex flex-col items-center justify-center px-4 py-24 text-center">
+          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-muted">
+            <Heart className="h-7 w-7 text-primary" />
+          </div>
+          <h2 className="font-display text-xl font-bold text-foreground">Your wishlist is empty</h2>
+          <p className="mt-2 text-sm text-muted-foreground">Save artworks you love to find them later</p>
+          <button
+            onClick={() => navigate("/browse")}
+            className="mt-4 rounded-full bg-gradient-burgundy px-6 py-2.5 text-sm font-semibold text-primary-foreground transition-transform hover:scale-105"
+          >
+            Browse Artworks
+          </button>
+        </div>
+        <BottomNav />
       </div>
-    </header>
-    <div className="flex flex-col items-center justify-center px-4 py-24 text-center">
-      <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-burgundy-light">
-        <Heart className="h-7 w-7 text-primary" />
-      </div>
-      <h2 className="font-display text-xl font-bold text-foreground">Your wishlist is empty</h2>
-      <p className="mt-2 text-sm text-muted-foreground">Save artworks you love to find them later</p>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background pb-20">
+      <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur-lg">
+        <div className="mx-auto max-w-lg px-4 py-3 flex items-center justify-between">
+          <h1 className="font-display text-lg font-bold text-foreground">Wishlist</h1>
+          <span className="text-xs text-muted-foreground">{wishlistItems.length} saved</span>
+        </div>
+      </header>
+
+      <main className="mx-auto max-w-lg px-4 pt-4 space-y-3 pb-6">
+        <AnimatePresence mode="popLayout">
+          {wishlistItems.map((artwork) => {
+            const imageSrc = useImageForArtwork(artwork.image);
+            return (
+              <motion.div
+                key={artwork.id}
+                layout
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, x: -100 }}
+                className="flex gap-3 rounded-xl border border-border bg-card p-3"
+              >
+                <img
+                  src={imageSrc}
+                  alt={artwork.title}
+                  onClick={() => navigate(`/artwork/${artwork.id}`)}
+                  className="h-24 w-24 rounded-lg object-cover cursor-pointer"
+                />
+                <div className="flex-1 flex flex-col justify-between">
+                  <div>
+                    <h3
+                      onClick={() => navigate(`/artwork/${artwork.id}`)}
+                      className="font-display text-sm font-semibold text-foreground line-clamp-1 cursor-pointer hover:text-primary transition-colors"
+                    >
+                      {artwork.title}
+                    </h3>
+                    <p className="text-xs text-muted-foreground">{artwork.artist}</p>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="font-display text-sm font-bold text-foreground">{formatPrice(artwork.price)}</span>
+                      {artwork.originalPrice && (
+                        <span className="text-xs text-muted-foreground line-through">{formatPrice(artwork.originalPrice)}</span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 mt-2">
+                    <button
+                      onClick={() => addToCart(artwork.id)}
+                      className="flex items-center gap-1.5 rounded-lg bg-gradient-burgundy px-3 py-1.5 text-xs font-semibold text-primary-foreground transition-transform hover:scale-105"
+                    >
+                      <ShoppingCart className="h-3 w-3" /> Add to Cart
+                    </button>
+                    <button
+                      onClick={() => removeFromWishlist(artwork.id)}
+                      className="flex items-center gap-1 rounded-lg border border-border px-2.5 py-1.5 text-xs text-muted-foreground hover:text-destructive hover:border-destructive transition-colors"
+                    >
+                      <Trash2 className="h-3 w-3" /> Remove
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })}
+        </AnimatePresence>
+      </main>
+
+      <BottomNav />
     </div>
-    <BottomNav />
-  </div>
-);
+  );
+};
 
 export default Wishlist;

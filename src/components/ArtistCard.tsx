@@ -1,14 +1,17 @@
 import { BadgeCheck, MapPin } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Artist } from "@/data/mockData";
 
 const ArtistCard = ({ artist }: { artist: Artist }) => {
+  const navigate = useNavigate();
   const initials = artist.name.split(" ").map(n => n[0]).join("");
 
   return (
     <motion.div
       whileHover={{ y: -4 }}
-      className="flex shrink-0 flex-col items-center gap-2 rounded-xl border border-border bg-card p-4 shadow-art transition-shadow hover:shadow-gold"
+      onClick={() => navigate(`/artist/${artist.id}`)}
+      className="flex shrink-0 flex-col items-center gap-2 rounded-xl border border-border bg-card p-4 shadow-art transition-shadow hover:shadow-gold cursor-pointer"
       style={{ minWidth: 140 }}
     >
       <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-gold font-display text-xl font-bold text-foreground">

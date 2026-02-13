@@ -1,22 +1,23 @@
-import { User, Settings, Package, CreditCard, HelpCircle, LogOut, ChevronRight, Palette, BookOpen, Store } from "lucide-react";
+import { User, Settings, Package, CreditCard, HelpCircle, LogOut, ChevronRight, Palette, BookOpen, Store, Bell, Award } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import BottomNav from "@/components/BottomNav";
 
 const menuItems = [
-  { icon: Package, label: "My Orders", desc: "Track and manage orders", path: "" },
+  { icon: Package, label: "My Orders", desc: "Track and manage orders", path: "/orders" },
   { icon: Store, label: "Vendor Dashboard", desc: "Manage your shop", path: "/vendor" },
   { icon: Palette, label: "Commission Art", desc: "Request custom artwork", path: "/commissions" },
   { icon: BookOpen, label: "Workshops", desc: "Learn from top artists", path: "/workshops" },
+  { icon: Bell, label: "Notifications", desc: "Order updates & alerts", path: "/notifications" },
   { icon: CreditCard, label: "Payment Methods", desc: "Saved cards & UPI", path: "" },
-  { icon: Settings, label: "Settings", desc: "Notifications, language, privacy", path: "" },
-  { icon: HelpCircle, label: "Help & Support", desc: "FAQ, contact us", path: "" },
+  { icon: Settings, label: "Settings", desc: "Language, notifications, privacy", path: "/settings" },
+  { icon: HelpCircle, label: "Help & Support", desc: "FAQ, contact us", path: "/help" },
 ];
 
 const Profile = () => {
   const navigate = useNavigate();
-  const { user, signOut, loading } = useAuth();
+  const { user, signOut } = useAuth();
 
   const handleSignOut = async () => {
     await signOut();
@@ -54,7 +55,7 @@ const Profile = () => {
           </div>
         </div>
 
-        {/* Sign in CTA or welcome */}
+        {/* Sign in CTA */}
         {!user && (
           <div className="px-4 pb-6">
             <button
@@ -63,6 +64,19 @@ const Profile = () => {
             >
               Sign In / Create Account
             </button>
+          </div>
+        )}
+
+        {/* Referral Banner */}
+        {user && (
+          <div className="px-4 pb-4">
+            <div className="rounded-xl bg-gradient-gold p-4 flex items-center gap-3">
+              <Award className="h-8 w-8 text-foreground shrink-0" />
+              <div>
+                <h3 className="text-sm font-bold text-foreground">Refer & Earn ₹100</h3>
+                <p className="text-xs text-foreground/70">Invite friends and earn credits on every purchase</p>
+              </div>
+            </div>
           </div>
         )}
 
