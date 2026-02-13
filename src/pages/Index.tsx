@@ -23,7 +23,10 @@ const Index = () => {
             <img src={logo} alt="ArtVPP" className="h-10 w-auto" />
           </div>
           <div className="flex items-center gap-3">
-            <button className="relative rounded-full bg-card p-2 text-muted-foreground transition-colors hover:text-foreground">
+            <button
+              onClick={() => navigate("/notifications")}
+              className="relative rounded-full bg-card p-2 text-muted-foreground transition-colors hover:text-foreground"
+            >
               <Bell className="h-5 w-5" />
               <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-primary" />
             </button>
@@ -137,7 +140,23 @@ const Index = () => {
           </div>
         </section>
 
-        {/* Services Banner */}
+        {/* Workshops Banner */}
+        <section className="px-4 pb-3">
+          <div className="rounded-2xl bg-gradient-gold p-5">
+            <h3 className="font-display text-lg font-bold text-foreground">Workshops & Classes</h3>
+            <p className="mt-1 text-sm text-foreground/70">
+              Learn traditional Indian art from master artists — online and offline.
+            </p>
+            <button
+              onClick={() => navigate("/workshops")}
+              className="mt-3 rounded-full bg-background px-4 py-2 text-xs font-semibold text-primary transition-transform hover:scale-105"
+            >
+              Explore Workshops
+            </button>
+          </div>
+        </section>
+
+        {/* Commission Banner */}
         <section className="px-4 pb-6">
           <div className="rounded-2xl bg-gradient-burgundy p-5">
             <h3 className="font-display text-lg font-bold text-primary-foreground">Commission an Artist</h3>

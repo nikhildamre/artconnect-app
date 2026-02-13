@@ -32,7 +32,10 @@ const VendorDashboard = () => {
             </button>
             <h1 className="font-display text-lg font-bold text-foreground">Vendor Dashboard</h1>
           </div>
-          <button className="flex items-center gap-1 rounded-full bg-gradient-burgundy px-3 py-1.5 text-xs font-semibold text-primary-foreground">
+          <button
+            onClick={() => navigate("/vendor/products")}
+            className="flex items-center gap-1 rounded-full bg-gradient-burgundy px-3 py-1.5 text-xs font-semibold text-primary-foreground"
+          >
             <Plus className="h-3.5 w-3.5" /> Add Product
           </button>
         </div>
