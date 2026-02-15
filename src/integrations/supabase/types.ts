@@ -231,6 +231,7 @@ export type Database = {
           title: string
           updated_at: string
           vendor_id: string
+          vendor_name: string | null
         }
         Insert: {
           category?: string | null
@@ -250,6 +251,7 @@ export type Database = {
           title: string
           updated_at?: string
           vendor_id: string
+          vendor_name?: string | null
         }
         Update: {
           category?: string | null
@@ -269,6 +271,7 @@ export type Database = {
           title?: string
           updated_at?: string
           vendor_id?: string
+          vendor_name?: string | null
         }
         Relationships: []
       }
