@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      audit_logs: {
+        Row: {
+          action: string
+          admin_id: string
+          created_at: string
+          details: Json | null
+          id: string
+          target_id: string
+          target_type: string
+        }
+        Insert: {
+          action: string
+          admin_id: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          target_id: string
+          target_type: string
+        }
+        Update: {
+          action?: string
+          admin_id?: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          target_id?: string
+          target_type?: string
+        }
+        Relationships: []
+      }
       cart_items: {
         Row: {
           cart_id: string
@@ -214,6 +244,7 @@ export type Database = {
       }
       products: {
         Row: {
+          admin_feedback: string | null
           category: string | null
           created_at: string
           description: string | null
@@ -224,8 +255,11 @@ export type Database = {
           inventory: number
           is_active: boolean | null
           medium: string | null
+          moderation_status: string
           price: number
           rating: number | null
+          reviewed_at: string | null
+          reviewed_by: string | null
           reviews_count: number | null
           tags: string[] | null
           title: string
@@ -234,6 +268,7 @@ export type Database = {
           vendor_name: string | null
         }
         Insert: {
+          admin_feedback?: string | null
           category?: string | null
           created_at?: string
           description?: string | null
@@ -244,8 +279,11 @@ export type Database = {
           inventory?: number
           is_active?: boolean | null
           medium?: string | null
+          moderation_status?: string
           price?: number
           rating?: number | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           reviews_count?: number | null
           tags?: string[] | null
           title: string
@@ -254,6 +292,7 @@ export type Database = {
           vendor_name?: string | null
         }
         Update: {
+          admin_feedback?: string | null
           category?: string | null
           created_at?: string
           description?: string | null
@@ -264,8 +303,11 @@ export type Database = {
           inventory?: number
           is_active?: boolean | null
           medium?: string | null
+          moderation_status?: string
           price?: number
           rating?: number | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           reviews_count?: number | null
           tags?: string[] | null
           title?: string
@@ -306,6 +348,69 @@ export type Database = {
           id?: string
           location?: string | null
           phone_number?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      seller_applications: {
+        Row: {
+          art_category: string
+          artist_bio: string | null
+          bank_details: Json | null
+          created_at: string
+          email: string
+          full_name: string
+          government_id_url: string | null
+          id: string
+          phone: string
+          portfolio_url: string | null
+          rejection_reason: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          sample_work_urls: string[] | null
+          social_media_links: Json | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          art_category: string
+          artist_bio?: string | null
+          bank_details?: Json | null
+          created_at?: string
+          email: string
+          full_name: string
+          government_id_url?: string | null
+          id?: string
+          phone: string
+          portfolio_url?: string | null
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          sample_work_urls?: string[] | null
+          social_media_links?: Json | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          art_category?: string
+          artist_bio?: string | null
+          bank_details?: Json | null
+          created_at?: string
+          email?: string
+          full_name?: string
+          government_id_url?: string | null
+          id?: string
+          phone?: string
+          portfolio_url?: string | null
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          sample_work_urls?: string[] | null
+          social_media_links?: Json | null
+          status?: string
           updated_at?: string
           user_id?: string
         }

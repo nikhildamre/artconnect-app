@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
+import ProtectedRoute from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 import Browse from "./pages/Browse";
 import ArtworkDetail from "./pages/ArtworkDetail";
@@ -21,6 +22,8 @@ import Settings from "./pages/Settings";
 import Notifications from "./pages/Notifications";
 import HelpSupport from "./pages/HelpSupport";
 import AddProduct from "./pages/AddProduct";
+import ApplySeller from "./pages/ApplySeller";
+import AdminDashboard from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -43,8 +46,10 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/workshops" element={<Workshops />} />
             <Route path="/commissions" element={<Commissions />} />
-            <Route path="/vendor" element={<VendorDashboard />} />
-            <Route path="/vendor/products" element={<AddProduct />} />
+            <Route path="/apply-seller" element={<ApplySeller />} />
+            <Route path="/vendor" element={<ProtectedRoute requiredRole="vendor"><VendorDashboard /></ProtectedRoute>} />
+            <Route path="/vendor/products" element={<ProtectedRoute requiredRole="vendor"><AddProduct /></ProtectedRoute>} />
+            <Route path="/admin" element={<ProtectedRoute requiredRole="admin"><AdminDashboard /></ProtectedRoute>} />
             <Route path="/orders" element={<Orders />} />
             <Route path="/artist/:id" element={<ArtistProfile />} />
             <Route path="/settings" element={<Settings />} />

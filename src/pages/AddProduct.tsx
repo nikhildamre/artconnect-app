@@ -105,26 +105,34 @@ const AddProduct = () => {
           <div className="flex items-center justify-center py-12"><div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" /></div>
         ) : (
           <div className="space-y-2">
-            {(products || []).map((product) => (
-              <motion.div key={product.id} layout className="flex items-center gap-3 rounded-xl border border-border bg-card p-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-muted text-xl">🎨</div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-foreground truncate">{product.title}</p>
-                  <div className="flex items-center gap-2 mt-0.5">
-                    <span className="text-xs font-bold text-foreground">{formatPrice(product.price)}</span>
-                    <span className="text-xs text-muted-foreground">• Stock: {product.inventory}</span>
+              {(products || []).map((product) => (
+                <motion.div key={product.id} layout className="flex items-center gap-3 rounded-xl border border-border bg-card p-3">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-muted text-xl">🎨</div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-foreground truncate">{product.title}</p>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <span className="text-xs font-bold text-foreground">{formatPrice(product.price)}</span>
+                      <span className="text-xs text-muted-foreground">• Stock: {product.inventory}</span>
+                    </div>
+                    {product.admin_feedback && (
+                      <p className="text-[10px] text-destructive mt-0.5 italic">Admin: {product.admin_feedback}</p>
+                    )}
                   </div>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <button onClick={() => toggleActive(product.id, product.is_active)} className="rounded-lg p-1.5 text-muted-foreground hover:text-foreground transition-colors">
-                    {product.is_active ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
-                  </button>
-                  <button onClick={() => deleteProduct(product.id)} className="rounded-lg p-1.5 text-muted-foreground hover:text-destructive transition-colors">
-                    <Trash2 className="h-4 w-4" />
-                  </button>
-                </div>
-              </motion.div>
-            ))}
+                  <div className="flex flex-col items-end gap-1">
+                    <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full ${product.moderation_status === "approved" ? "bg-green-100 text-green-700" : product.moderation_status === "rejected" ? "bg-destructive/10 text-destructive" : "bg-secondary/10 text-secondary"}`}>
+                      {product.moderation_status}
+                    </span>
+                    <div className="flex items-center gap-1.5">
+                      <button onClick={() => toggleActive(product.id, product.is_active)} className="rounded-lg p-1.5 text-muted-foreground hover:text-foreground transition-colors">
+                        {product.is_active ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+                      </button>
+                      <button onClick={() => deleteProduct(product.id)} className="rounded-lg p-1.5 text-muted-foreground hover:text-destructive transition-colors">
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
             {(!products || products.length === 0) && (
               <div className="text-center py-12"><p className="text-sm text-muted-foreground">No products yet. Click "Add" to list your first artwork!</p></div>
             )}
