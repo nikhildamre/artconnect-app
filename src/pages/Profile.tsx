@@ -1,25 +1,29 @@
-import { User, Settings, Package, CreditCard, HelpCircle, LogOut, ChevronRight, Palette, BookOpen, Store, Bell, Award } from "lucide-react";
+import { User, Settings, Package, CreditCard, HelpCircle, LogOut, ChevronRight, Palette, BookOpen, Store, Bell, Award, Shield, PaintBucket } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfile } from "@/hooks/useProfile";
+import { useIsAdmin, useIsVendor } from "@/hooks/useAdmin";
 import { toast } from "sonner";
 import BottomNav from "@/components/BottomNav";
-
-const menuItems = [
-  { icon: Package, label: "My Orders", desc: "Track and manage orders", path: "/orders" },
-  { icon: Store, label: "Vendor Dashboard", desc: "Manage your shop", path: "/vendor" },
-  { icon: Palette, label: "Commission Art", desc: "Request custom artwork", path: "/commissions" },
-  { icon: BookOpen, label: "Workshops", desc: "Learn from top artists", path: "/workshops" },
-  { icon: Bell, label: "Notifications", desc: "Order updates & alerts", path: "/notifications" },
-  { icon: CreditCard, label: "Payment Methods", desc: "Saved cards & UPI", path: "" },
-  { icon: Settings, label: "Settings", desc: "Language, notifications, privacy", path: "/settings" },
-  { icon: HelpCircle, label: "Help & Support", desc: "FAQ, contact us", path: "/help" },
-];
 
 const Profile = () => {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const { data: profile } = useProfile();
+  const { data: isAdmin } = useIsAdmin();
+  const { data: isVendor } = useIsVendor();
+
+  const menuItems = [
+    { icon: Package, label: "My Orders", desc: "Track and manage orders", path: "/orders" },
+    ...(isVendor ? [{ icon: Store, label: "Vendor Dashboard", desc: "Manage your shop", path: "/vendor" }] : [{ icon: PaintBucket, label: "Become a Seller", desc: "Apply to sell your art", path: "/apply-seller" }]),
+    ...(isAdmin ? [{ icon: Shield, label: "Admin Dashboard", desc: "Manage the platform", path: "/admin" }] : []),
+    { icon: Palette, label: "Commission Art", desc: "Request custom artwork", path: "/commissions" },
+    { icon: BookOpen, label: "Workshops", desc: "Learn from top artists", path: "/workshops" },
+    { icon: Bell, label: "Notifications", desc: "Order updates & alerts", path: "/notifications" },
+    { icon: CreditCard, label: "Payment Methods", desc: "Saved cards & UPI", path: "" },
+    { icon: Settings, label: "Settings", desc: "Language, notifications, privacy", path: "/settings" },
+    { icon: HelpCircle, label: "Help & Support", desc: "FAQ, contact us", path: "/help" },
+  ];
 
   const handleSignOut = async () => {
     await signOut();
