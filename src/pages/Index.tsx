@@ -62,7 +62,7 @@ const Index = () => {
       <header className="sticky top-0 z-40 bg-background/90 backdrop-blur-lg border-b border-border">
         <div className="mx-auto flex max-w-lg items-center justify-between px-4 py-3">
           <div className="flex items-center gap-2">
-            <img src={logo} alt="ArtVPP" className="h-10 w-auto" />
+            <img src={logo} alt="Kalavapp" className="h-12 w-auto" />
           </div>
           <div className="flex items-center gap-3">
             <button onClick={() => navigate("/notifications")} className="relative rounded-full bg-card p-2 text-muted-foreground transition-colors hover:text-foreground">
