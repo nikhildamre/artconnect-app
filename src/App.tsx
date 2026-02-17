@@ -24,6 +24,7 @@ import HelpSupport from "./pages/HelpSupport";
 import AddProduct from "./pages/AddProduct";
 import ApplySeller from "./pages/ApplySeller";
 import AdminDashboard from "./pages/AdminDashboard";
+import Install from "./pages/Install";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -55,6 +56,7 @@ const App = () => (
             <Route path="/settings" element={<Settings />} />
             <Route path="/notifications" element={<Notifications />} />
             <Route path="/help" element={<HelpSupport />} />
+            <Route path="/install" element={<Install />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
