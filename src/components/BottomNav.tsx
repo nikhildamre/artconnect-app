@@ -15,29 +15,29 @@ const BottomNav = () => {
   const navigate = useNavigate();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-background/95 backdrop-blur-lg safe-area-bottom">
-      <div className="mx-auto flex max-w-lg items-center justify-around px-2 py-1.5">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-border/50 bg-background/90 backdrop-blur-xl safe-area-bottom">
+      <div className="mx-auto flex max-w-lg items-center justify-around px-1 py-1">
         {tabs.map((tab) => {
           const isActive = location.pathname === tab.path;
           return (
             <button
               key={tab.path}
               onClick={() => navigate(tab.path)}
-              className="relative flex flex-col items-center gap-0.5 px-3 py-1.5"
+              className="relative flex flex-col items-center gap-0.5 px-4 py-2 rounded-xl transition-colors"
             >
               {isActive && (
                 <motion.div
                   layoutId="bottomNavIndicator"
-                  className="absolute -top-1.5 h-0.5 w-6 rounded-full bg-gradient-gold"
-                  transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                  className="absolute inset-0 rounded-xl bg-primary/8"
+                  transition={{ type: "spring", stiffness: 500, damping: 35 }}
                 />
               )}
               <tab.icon
-                className={`h-5 w-5 transition-colors ${isActive ? "text-primary" : "text-muted-foreground"}`}
-                strokeWidth={isActive ? 2.5 : 2}
+                className={`h-5 w-5 transition-all relative z-10 ${isActive ? "text-primary" : "text-muted-foreground"}`}
+                strokeWidth={isActive ? 2.5 : 1.8}
               />
               <span
-                className={`text-[10px] font-medium transition-colors ${isActive ? "text-primary" : "text-muted-foreground"}`}
+                className={`text-[10px] font-semibold transition-colors relative z-10 ${isActive ? "text-primary" : "text-muted-foreground"}`}
               >
                 {tab.label}
               </span>
