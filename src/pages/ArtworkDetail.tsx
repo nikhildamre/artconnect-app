@@ -1,11 +1,12 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Heart, Share2, Star, ShoppingCart, BadgeCheck, MessageCircle, Truck, Shield, RotateCcw } from "lucide-react";
+import { ArrowLeft, Heart, Share2, Star, ShoppingCart, BadgeCheck, MessageCircle, Truck, Shield, RotateCcw, Zap } from "lucide-react";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useProduct } from "@/hooks/useProducts";
 import { useAddToCart } from "@/hooks/useCart";
 import { useAuth } from "@/contexts/AuthContext";
 import { useImageForArtwork } from "@/hooks/useArtworkImages";
+import { useRazorpay } from "@/hooks/useRazorpay";
 import BottomNav from "@/components/BottomNav";
 import { toast } from "sonner";
 
@@ -19,6 +20,7 @@ const ArtworkDetail = () => {
   const [liked, setLiked] = useState(false);
   const { data: product, isLoading } = useProduct(id);
   const addToCart = useAddToCart();
+  const { processPayment, isProcessing } = useRazorpay();
   const imageSrc = useImageForArtwork(product?.images?.[0] || "");
 
   const handleAddToCart = () => {
@@ -33,6 +35,38 @@ const ArtworkDetail = () => {
       {
         onSuccess: () => toast.success("Added to cart!", { description: product.title }),
         onError: () => toast.error("Failed to add to cart"),
+      }
+    );
+  };
+
+  const handleBuyNow = () => {
+    if (!user) {
+      toast.error("Please sign in to make a purchase");
+      navigate("/auth");
+      return;
+    }
+    if (!product) return;
+
+    // Calculate total with shipping and tax
+    const subtotal = product.price;
+    const shipping = subtotal > 25000 ? 0 : 499;
+    const tax = Math.round(subtotal * 0.18);
+    const total = subtotal + shipping + tax;
+
+    processPayment(
+      {
+        amount: total,
+        description: `Direct Purchase - ${product.title}`
+      },
+      (paymentResponse) => {
+        toast.success("Payment successful! 🎉", {
+          description: `Payment ID: ${paymentResponse.razorpay_payment_id}`
+        });
+        // In a real app, you would create an order here
+        navigate("/orders");
+      },
+      () => {
+        toast.error("Payment cancelled or failed");
       }
     );
   };
@@ -174,13 +208,27 @@ const ArtworkDetail = () => {
           <button
             onClick={handleAddToCart}
             disabled={addToCart.isPending}
-            className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-gradient-burgundy py-4 text-sm font-bold text-primary-foreground shadow-gold transition-transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60"
+            className="flex flex-1 items-center justify-center gap-2 rounded-2xl border-2 border-primary bg-background py-4 text-sm font-bold text-primary transition-colors hover:bg-primary/5 disabled:opacity-60"
           >
             <ShoppingCart className="h-4 w-4" />
             {addToCart.isPending ? "Adding..." : "Add to Cart"}
           </button>
-          <button className="rounded-2xl border-2 border-primary bg-background px-6 py-4 text-sm font-bold text-primary transition-colors hover:bg-primary/5">
-            Buy Now
+          <button 
+            onClick={handleBuyNow}
+            disabled={isProcessing}
+            className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-gradient-burgundy py-4 text-sm font-bold text-primary-foreground shadow-gold transition-transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60"
+          >
+            {isProcessing ? (
+              <>
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
+                Processing...
+              </>
+            ) : (
+              <>
+                <Zap className="h-4 w-4" />
+                Buy Now
+              </>
+            )}
           </button>
         </div>
       </div>

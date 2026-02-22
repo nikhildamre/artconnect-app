@@ -31,16 +31,16 @@ export interface Category {
   id: string;
   name: string;
   icon: string;
-  count: number;
+  description: string;
 }
 
 export const categories: Category[] = [
-  { id: "paintings", name: "Paintings", icon: "🎨", count: 2450 },
-  { id: "sculptures", name: "Sculptures", icon: "🗿", count: 890 },
-  { id: "digital", name: "Digital Art", icon: "💻", count: 1230 },
-  { id: "photography", name: "Photography", icon: "📷", count: 760 },
-  { id: "handicrafts", name: "Handicrafts", icon: "🧶", count: 1890 },
-  { id: "folk", name: "Folk Art", icon: "🪷", count: 1120 },
+  { id: "paintings", name: "Paintings", icon: "🎨", description: "Canvas stories in vibrant hues" },
+  { id: "sculptures", name: "Sculptures", icon: "🗿", description: "Three-dimensional poetry" },
+  { id: "digital", name: "Digital Art", icon: "💻", description: "Modern creativity unleashed" },
+  { id: "photography", name: "Photography", icon: "📷", description: "Moments frozen in time" },
+  { id: "handicrafts", name: "Handicrafts", icon: "🧶", description: "Handmade with love" },
+  { id: "folk", name: "Folk Art", icon: "🪷", description: "Traditional tales retold" },
 ];
 
 export const featuredArtworks: Artwork[] = [

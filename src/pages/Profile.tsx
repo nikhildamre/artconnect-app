@@ -21,7 +21,7 @@ const Profile = () => {
     { icon: Palette, label: "Commission Art", desc: "Request custom artwork", path: "/commissions" },
     { icon: BookOpen, label: "Workshops", desc: "Learn from top artists", path: "/workshops" },
     { icon: Bell, label: "Notifications", desc: "Order updates & alerts", path: "/notifications" },
-    { icon: CreditCard, label: "Payment Methods", desc: "Saved cards & UPI", path: "" },
+    { icon: CreditCard, label: "Payment Methods", desc: "Saved cards & UPI", path: "/payment-methods" },
     { icon: Settings, label: "Settings", desc: "Language, notifications, privacy", path: "/settings" },
     { icon: HelpCircle, label: "Help & Support", desc: "FAQ, contact us", path: "/help" },
   ];

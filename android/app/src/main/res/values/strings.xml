@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">ArtVpp</string>
+    <string name="title_activity_main">ArtVpp</string>
+    <string name="package_name">com.artvpp.app</string>
+    <string name="custom_url_scheme">com.artvpp.app</string>
+</resources>

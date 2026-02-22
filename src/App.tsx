@@ -12,8 +12,11 @@ import Cart from "./pages/Cart";
 import Wishlist from "./pages/Wishlist";
 import Profile from "./pages/Profile";
 import Auth from "./pages/Auth";
+import AuthCallback from "./pages/AuthCallback";
 import Workshops from "./pages/Workshops";
 import Commissions from "./pages/Commissions";
+import Services from "./pages/Services";
+import StudioRentals from "./pages/StudioRentals";
 import VendorDashboard from "./pages/VendorDashboard";
 import Checkout from "./pages/Checkout";
 import Orders from "./pages/Orders";
@@ -25,6 +28,9 @@ import AddProduct from "./pages/AddProduct";
 import ApplySeller from "./pages/ApplySeller";
 import AdminDashboard from "./pages/AdminDashboard";
 import Install from "./pages/Install";
+import PaymentSuccess from "./pages/PaymentSuccess";
+import PaymentMethods from "./pages/PaymentMethods";
+import RazorpayDemo from "./pages/RazorpayDemo";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -45,8 +51,11 @@ const App = () => (
             <Route path="/wishlist" element={<Wishlist />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/auth/callback" element={<AuthCallback />} />
             <Route path="/workshops" element={<Workshops />} />
             <Route path="/commissions" element={<Commissions />} />
+            <Route path="/services" element={<Services />} />
+            <Route path="/studio-rentals" element={<StudioRentals />} />
             <Route path="/apply-seller" element={<ApplySeller />} />
             <Route path="/vendor" element={<ProtectedRoute requiredRole="vendor"><VendorDashboard /></ProtectedRoute>} />
             <Route path="/vendor/products" element={<ProtectedRoute requiredRole="vendor"><AddProduct /></ProtectedRoute>} />
@@ -57,6 +66,9 @@ const App = () => (
             <Route path="/notifications" element={<Notifications />} />
             <Route path="/help" element={<HelpSupport />} />
             <Route path="/install" element={<Install />} />
+            <Route path="/payment-success" element={<PaymentSuccess />} />
+            <Route path="/payment-methods" element={<PaymentMethods />} />
+            <Route path="/razorpay-demo" element={<RazorpayDemo />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

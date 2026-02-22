@@ -44,7 +44,10 @@ export const useAllSellerApplications = () => {
         .from("seller_applications")
         .select("*")
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) {
+        console.error("Error fetching seller applications:", error);
+        throw error;
+      }
       return data || [];
     },
   });
@@ -58,7 +61,10 @@ export const useAllProducts = () => {
         .from("products")
         .select("*")
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) {
+        console.error("Error fetching products:", error);
+        throw error;
+      }
       return data || [];
     },
   });
@@ -72,7 +78,10 @@ export const useAllOrders = () => {
         .from("orders")
         .select("*, order_items(*)")
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) {
+        console.error("Error fetching orders:", error);
+        throw error;
+      }
       return data || [];
     },
   });
@@ -86,15 +95,44 @@ export const useAllSellers = () => {
         .from("user_roles")
         .select("user_id, created_at")
         .eq("role", "vendor");
-      if (error) throw error;
+      if (error) {
+        console.error("Error fetching seller roles:", error);
+        throw error;
+      }
       // Get profiles for these vendors
       if (!data || data.length === 0) return [];
       const userIds = data.map((r) => r.user_id);
-      const { data: profiles } = await supabase
-        .from("profiles")
-        .select("*")
-        .in("user_id", userIds);
-      return profiles || [];
+      
+      // Try both possible profile table structures
+      let profiles = [];
+      try {
+        const { data: profilesData, error: profilesError } = await supabase
+          .from("profiles")
+          .select("id, user_id, display_name, bio, location, avatar_url")
+          .in("user_id", userIds);
+        
+        if (profilesError) {
+          // Try alternative structure with id as primary key
+          const { data: altProfilesData } = await supabase
+            .from("profiles")
+            .select("id, display_name, bio, location, avatar_url")
+            .in("id", userIds);
+          profiles = altProfilesData?.map(p => ({ ...p, user_id: p.id })) || [];
+        } else {
+          profiles = profilesData || [];
+        }
+      } catch (err) {
+        console.error("Error fetching seller profiles:", err);
+        // Return basic info even if profiles fail
+        return data.map(d => ({ 
+          user_id: d.user_id, 
+          id: d.user_id,
+          display_name: "Unknown Seller",
+          created_at: d.created_at
+        }));
+      }
+      
+      return profiles;
     },
   });
 };

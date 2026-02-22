@@ -3,9 +3,7 @@ import { ArrowLeft, Plus, Eye, EyeOff, Trash2, Edit2, Image as ImageIcon } from 
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
-import { useVendorProducts } from "@/hooks/useProfile";
-import { supabase } from "@/integrations/supabase/client";
-import { useQueryClient } from "@tanstack/react-query";
+import { useVendorProducts, useCreateProduct, useUpdateProduct, useDeleteProduct } from "@/hooks/useVendor";
 import { toast } from "sonner";
 import BottomNav from "@/components/BottomNav";
 
@@ -16,45 +14,60 @@ const AddProduct = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { data: products, isLoading } = useVendorProducts();
-  const qc = useQueryClient();
+  const createProduct = useCreateProduct();
+  const updateProduct = useUpdateProduct();
+  const deleteProductMutation = useDeleteProduct();
   const [showForm, setShowForm] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({ title: "", description: "", price: "", category: "Paintings", medium: "", inventory: "1" });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
-    setSubmitting(true);
-    const { error } = await supabase.from("products").insert({
-      vendor_id: user.id,
-      title: form.title,
-      description: form.description,
-      price: Number(form.price),
-      category: form.category,
-      medium: form.medium,
-      inventory: Number(form.inventory),
-      vendor_name: user.user_metadata?.display_name || user.email || "Artist",
-    });
-    setSubmitting(false);
-    if (error) {
+    
+    try {
+      await createProduct.mutateAsync({
+        title: form.title,
+        description: form.description,
+        price: Number(form.price),
+        category: form.category,
+        medium: form.medium,
+        inventory: Number(form.inventory),
+      });
+      
+      setForm({ title: "", description: "", price: "", category: "Paintings", medium: "", inventory: "1" });
+      setShowForm(false);
+      toast.success("Product added successfully! It will be reviewed by admin.");
+    } catch (error) {
       toast.error("Failed to add product. Make sure you have vendor permissions.");
-      return;
+      console.error(error);
     }
-    setForm({ title: "", description: "", price: "", category: "Paintings", medium: "", inventory: "1" });
-    setShowForm(false);
-    qc.invalidateQueries({ queryKey: ["vendor-products"] });
-    toast.success("Product added successfully!");
   };
 
   const toggleActive = async (id: string, currentActive: boolean | null) => {
-    await supabase.from("products").update({ is_active: !currentActive }).eq("id", id);
-    qc.invalidateQueries({ queryKey: ["vendor-products"] });
+    try {
+      await updateProduct.mutateAsync({
+        productId: id,
+        updates: { is_active: !currentActive }
+      });
+      toast.success(`Product ${!currentActive ? 'activated' : 'deactivated'} successfully!`);
+    } catch (error) {
+      toast.error("Failed to update product");
+      console.error(error);
+    }
   };
 
-  const deleteProduct = async (id: string) => {
-    await supabase.from("products").delete().eq("id", id);
-    qc.invalidateQueries({ queryKey: ["vendor-products"] });
-    toast.success("Product deleted");
+  const handleDeleteProduct = async (id: string, title: string) => {
+    if (!confirm(`Are you sure you want to delete "${title}"? This action cannot be undone.`)) {
+      return;
+    }
+    
+    try {
+      await deleteProductMutation.mutateAsync(id);
+      toast.success("Product deleted successfully!");
+    } catch (error) {
+      toast.error("Failed to delete product");
+      console.error(error);
+    }
   };
 
   return (
@@ -92,8 +105,8 @@ const AddProduct = () => {
                 <input type="number" placeholder="Inventory *" value={form.inventory} onChange={(e) => setForm({ ...form, inventory: e.target.value })} className="rounded-lg border border-border bg-background py-2.5 px-3 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:border-secondary" required />
               </div>
               <div className="flex gap-2">
-                <button type="submit" disabled={submitting} className="flex-1 rounded-lg bg-gradient-burgundy py-2.5 text-sm font-semibold text-primary-foreground disabled:opacity-60">
-                  {submitting ? "Saving..." : "Save Product"}
+                <button type="submit" disabled={createProduct.isPending} className="flex-1 rounded-lg bg-gradient-burgundy py-2.5 text-sm font-semibold text-primary-foreground disabled:opacity-60">
+                  {createProduct.isPending ? "Saving..." : "Save Product"}
                 </button>
                 <button type="button" onClick={() => setShowForm(false)} className="rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-muted-foreground">Cancel</button>
               </div>
@@ -123,10 +136,18 @@ const AddProduct = () => {
                       {product.moderation_status}
                     </span>
                     <div className="flex items-center gap-1.5">
-                      <button onClick={() => toggleActive(product.id, product.is_active)} className="rounded-lg p-1.5 text-muted-foreground hover:text-foreground transition-colors">
+                      <button 
+                        onClick={() => toggleActive(product.id, product.is_active)} 
+                        disabled={updateProduct.isPending}
+                        className="rounded-lg p-1.5 text-muted-foreground hover:text-foreground transition-colors disabled:opacity-60"
+                      >
                         {product.is_active ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
                       </button>
-                      <button onClick={() => deleteProduct(product.id)} className="rounded-lg p-1.5 text-muted-foreground hover:text-destructive transition-colors">
+                      <button 
+                        onClick={() => handleDeleteProduct(product.id, product.title)} 
+                        disabled={deleteProductMutation.isPending}
+                        className="rounded-lg p-1.5 text-muted-foreground hover:text-destructive transition-colors disabled:opacity-60"
+                      >
                         <Trash2 className="h-4 w-4" />
                       </button>
                     </div>

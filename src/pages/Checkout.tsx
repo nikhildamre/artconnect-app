@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCart } from "@/hooks/useCart";
 import { useCreateOrder } from "@/hooks/useOrders";
+import { useRazorpay } from "@/hooks/useRazorpay";
 import { toast } from "sonner";
 import BottomNav from "@/components/BottomNav";
 
@@ -16,7 +17,8 @@ const Checkout = () => {
   const { user } = useAuth();
   const { data: cartData } = useCart();
   const createOrder = useCreateOrder();
-  const [paymentMethod, setPaymentMethod] = useState("upi");
+  const { processPayment, isProcessing } = useRazorpay();
+  const [paymentMethod, setPaymentMethod] = useState("razorpay");
   const [address, setAddress] = useState({ name: "", phone: "", line1: "", line2: "", city: "", state: "", pincode: "" });
 
   const cartItems = cartData?.items || [];
@@ -32,6 +34,60 @@ const Checkout = () => {
       return;
     }
 
+    // If Razorpay payment is selected, initiate payment first
+    if (paymentMethod === "razorpay") {
+      const orderDescription = `ArtVpp Order - ${cartItems.length} item${cartItems.length > 1 ? 's' : ''}`;
+      
+      processPayment(
+        {
+          amount: total,
+          description: orderDescription
+        },
+        (paymentResponse) => {
+          // Payment successful, now create the order
+          createOrderWithPayment(paymentResponse);
+        },
+        () => {
+          // Payment failed or cancelled
+          toast.error("Payment was cancelled or failed");
+        }
+      );
+    } else {
+      // For COD, create order directly
+      createOrderDirectly();
+    }
+  };
+
+  const createOrderWithPayment = (paymentResponse: any) => {
+    createOrder.mutate(
+      {
+        items: cartItems.map((item) => ({
+          productId: item.product_id,
+          quantity: item.quantity,
+          price: item.products?.price || 0,
+        })),
+        subtotal,
+        tax,
+        shipping: shipping + codFee,
+        total,
+        shippingAddress: address,
+        paymentMethod: "razorpay",
+        paymentId: paymentResponse.razorpay_payment_id,
+        paymentStatus: "completed"
+      },
+      {
+        onSuccess: () => {
+          toast.success("Order placed successfully! 🎉", { 
+            description: "Payment completed. You will receive a confirmation email shortly." 
+          });
+          navigate("/orders");
+        },
+        onError: () => toast.error("Order creation failed. Please contact support."),
+      }
+    );
+  };
+
+  const createOrderDirectly = () => {
     createOrder.mutate(
       {
         items: cartItems.map((item) => ({
@@ -45,10 +101,13 @@ const Checkout = () => {
         total,
         shippingAddress: address,
         paymentMethod,
+        paymentStatus: paymentMethod === "cod" ? "pending" : "completed"
       },
       {
         onSuccess: () => {
-          toast.success("Order placed successfully! 🎉", { description: "You will receive a confirmation email shortly." });
+          toast.success("Order placed successfully! 🎉", { 
+            description: "You will receive a confirmation email shortly." 
+          });
           navigate("/orders");
         },
         onError: () => toast.error("Failed to place order. Please try again."),
@@ -84,15 +143,29 @@ const Checkout = () => {
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="rounded-xl border border-border bg-card p-4">
-          <div className="flex items-center gap-2 mb-3"><CreditCard className="h-4 w-4 text-secondary" /><h3 className="font-display text-sm font-bold text-foreground">Payment Method</h3></div>
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <CreditCard className="h-4 w-4 text-secondary" />
+              <h3 className="font-display text-sm font-bold text-foreground">Payment Method</h3>
+            </div>
+            <button
+              onClick={() => navigate("/payment-methods")}
+              className="text-xs font-semibold text-secondary hover:text-secondary/80 transition-colors"
+            >
+              Manage
+            </button>
+          </div>
           <div className="space-y-2">
             {[
-              { id: "upi", label: "UPI (Google Pay, PhonePe)", desc: "Instant payment" },
-              { id: "card", label: "Credit / Debit Card", desc: "Visa, Mastercard, RuPay" },
-              { id: "netbanking", label: "Net Banking", desc: "All major banks" },
-              { id: "cod", label: "Cash on Delivery", desc: "+₹49 handling fee" },
+              { id: "razorpay", label: "💳 Pay with Razorpay", desc: "UPI, Cards, Net Banking & More", recommended: true },
+              { id: "cod", label: "💵 Cash on Delivery", desc: "+₹49 handling fee" },
             ].map((method) => (
-              <button key={method.id} onClick={() => setPaymentMethod(method.id)} className={`flex w-full items-center gap-3 rounded-lg border p-3 transition-all ${paymentMethod === method.id ? "border-primary bg-primary/5" : "border-border hover:border-muted-foreground"}`}>
+              <button key={method.id} onClick={() => setPaymentMethod(method.id)} className={`flex w-full items-center gap-3 rounded-lg border p-3 transition-all relative ${paymentMethod === method.id ? "border-primary bg-primary/5" : "border-border hover:border-muted-foreground"}`}>
+                {method.recommended && (
+                  <div className="absolute -top-2 -right-2 bg-gradient-gold text-foreground text-[10px] font-bold px-2 py-0.5 rounded-full">
+                    RECOMMENDED
+                  </div>
+                )}
                 <div className={`h-4 w-4 rounded-full border-2 flex items-center justify-center ${paymentMethod === method.id ? "border-primary" : "border-muted-foreground"}`}>
                   {paymentMethod === method.id && <div className="h-2 w-2 rounded-full bg-primary" />}
                 </div>
@@ -121,12 +194,44 @@ const Checkout = () => {
           <div className="flex items-center gap-1.5"><Truck className="h-3.5 w-3.5 text-secondary" /><span className="text-xs text-muted-foreground">Free Shipping</span></div>
           <div className="flex items-center gap-1.5"><Shield className="h-3.5 w-3.5 text-secondary" /><span className="text-xs text-muted-foreground">Secure Payment</span></div>
         </div>
+
+        {/* Razorpay Demo Info */}
+        {paymentMethod === "razorpay" && (
+          <motion.div 
+            initial={{ opacity: 0, height: 0 }} 
+            animate={{ opacity: 1, height: "auto" }} 
+            className="rounded-xl border border-secondary/20 bg-secondary/5 p-4"
+          >
+            <h4 className="font-display text-sm font-bold text-secondary mb-2">🚀 Demo Payment Info</h4>
+            <div className="space-y-1 text-xs text-muted-foreground">
+              <p>• This is a <strong>demo integration</strong> with Razorpay test mode</p>
+              <p>• Use test cards: <strong>4111 1111 1111 1111</strong> (any CVV/expiry)</p>
+              <p>• UPI: Use <strong>success@razorpay</strong> for successful payment</p>
+              <p>• No real money will be charged</p>
+            </div>
+          </motion.div>
+        )}
       </main>
 
       <div className="fixed bottom-16 left-0 right-0 z-40 border-t border-border bg-background/95 backdrop-blur-lg p-4">
         <div className="mx-auto max-w-lg">
-          <button onClick={handlePlaceOrder} disabled={createOrder.isPending} className="w-full rounded-xl bg-gradient-burgundy py-3.5 text-sm font-semibold text-primary-foreground shadow-gold transition-transform hover:scale-[1.01] active:scale-[0.99] disabled:opacity-60">
-            {createOrder.isPending ? "Placing Order..." : `Place Order • ${formatPrice(total)}`}
+          <button 
+            onClick={handlePlaceOrder} 
+            disabled={createOrder.isPending || isProcessing} 
+            className="w-full rounded-xl bg-gradient-burgundy py-3.5 text-sm font-semibold text-primary-foreground shadow-gold transition-transform hover:scale-[1.01] active:scale-[0.99] disabled:opacity-60 flex items-center justify-center gap-2"
+          >
+            {isProcessing ? (
+              <>
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
+                Processing Payment...
+              </>
+            ) : createOrder.isPending ? (
+              "Placing Order..."
+            ) : paymentMethod === "razorpay" ? (
+              `Pay ${formatPrice(total)} with Razorpay`
+            ) : (
+              `Place Order • ${formatPrice(total)}`
+            )}
           </button>
         </div>
       </div>
