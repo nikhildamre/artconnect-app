@@ -1,7 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
-import { componentTagger } from "lovable-tagger";
 import { VitePWA } from "vite-plugin-pwa";
 
 // https://vitejs.dev/config/
@@ -15,7 +14,6 @@ export default defineConfig(({ mode }) => ({
   },
   plugins: [
     react(),
-    mode === "development" && componentTagger(),
     VitePWA({
       registerType: "autoUpdate",
       includeAssets: ["favicon.ico", "pwa-192x192.png", "pwa-512x512.png", "apple-touch-icon.png"],
@@ -24,8 +22,8 @@ export default defineConfig(({ mode }) => ({
         globPatterns: ["**/*.{js,css,html,ico,png,jpg,jpeg,svg,webp,woff,woff2}"],
       },
       manifest: {
-        name: "Kalavapp - India's Premier Art Marketplace",
-        short_name: "Kalavapp",
+        name: "ArtVpp - India's Premier Art Marketplace",
+        short_name: "ArtVpp",
         description: "Discover authentic Indian art from verified artists. Paintings, sculptures, folk art, and more.",
         theme_color: "#9E4A5A",
         background_color: "#FAF8F5",
