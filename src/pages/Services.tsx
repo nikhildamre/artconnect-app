@@ -35,11 +35,11 @@ const carouselServices = [
   {
     id: "studios",
     title: "Photography Studio Rentals",
-    subtitle: "Professional Photography Spaces",
-    description: "Rent fully equipped photography studios with professional lighting, backdrops, and props for your art documentation.",
+    subtitle: "Professional Photography & Video Spaces",
+    description: "Rent fully equipped studios with professional Sony cameras, lighting, green screen setup, and complete equipment for photography, video, and podcast production.",
     image: studioRentalsImage,
     gradient: "from-emerald-500 via-teal-500 to-cyan-500",
-    price: "₹500",
+    price: "₹1,000",
     priceLabel: "per hour",
     route: "/studio-rentals"
   }
@@ -75,14 +75,14 @@ const services = [
   {
     id: "studios",
     title: "Photography Studio Rentals",
-    subtitle: "Professional Photography Spaces",
-    description: "Rent fully equipped photography studios with professional lighting, backdrops, and props for your art documentation needs.",
+    subtitle: "Professional Photography & Video Spaces",
+    description: "Rent fully equipped studios with professional Sony cameras, lighting, green screen setup, and complete equipment for photography, video, and podcast production.",
     icon: "📸",
     gradient: "from-emerald-500 via-teal-500 to-cyan-500",
-    price: "₹500",
+    price: "₹1,000",
     priceLabel: "per hour",
-    features: ["Pro Lighting", "Multiple Backdrops", "Equipment Included", "Flexible Hours"],
-    stats: { locations: "5", bookings: "1K+", rating: "4.7" },
+    features: ["Sony Camera Equipment", "Green Screen Setup", "Professional Lighting", "Podcast Studio"],
+    stats: { equipment: "40+", bookings: "200+", rating: "4.9" },
     route: "/studio-rentals"
   }
 ];

@@ -7,40 +7,88 @@ import BottomNav from "@/components/BottomNav";
 const studios = [
   {
     id: 1,
-    name: "Creative Hub Studio",
-    location: "Bandra, Mumbai",
-    price: 500,
-    rating: 4.8,
-    reviews: 124,
-    image: "/api/placeholder/400/300",
-    features: ["Professional Lighting", "Multiple Backdrops", "Props Available", "Editing Station"],
-    size: "1200 sq ft",
-    capacity: "Up to 8 people"
-  },
-  {
-    id: 2,
-    name: "Artisan's Light Studio",
-    location: "Connaught Place, Delhi",
-    price: 650,
+    name: "ArtVpp Photography Studio",
+    location: "Professional Setup",
+    price: 1000,
     rating: 4.9,
     reviews: 89,
     image: "/api/placeholder/400/300",
-    features: ["Natural Light", "Cyclorama Wall", "High-end Equipment", "Makeup Room"],
-    size: "800 sq ft",
-    capacity: "Up to 6 people"
+    features: ["Professional Lighting", "Sony Camera Equipment", "Multiple Backdrops", "Editing Station"],
+    size: "Professional Grade",
+    capacity: "Full Day Setup",
+    type: "photo"
+  },
+  {
+    id: 2,
+    name: "ArtVpp Video Studio",
+    location: "Chroma Green Screen Setup",
+    price: 1000,
+    rating: 4.8,
+    reviews: 124,
+    image: "/api/placeholder/400/300",
+    features: ["Chroma Green Screen", "Professional Tripod", "Continuous Lighting", "Background Replacement"],
+    size: "Video Production",
+    capacity: "Attended Setup",
+    type: "video"
   },
   {
     id: 3,
-    name: "Modern Frame Studio",
-    location: "Koramangala, Bangalore",
-    price: 450,
-    rating: 4.7,
-    reviews: 156,
+    name: "ArtVpp Podcast Studio",
+    location: "Audio Recording Setup",
+    price: 2000,
+    rating: 4.9,
+    reviews: 67,
     image: "/api/placeholder/400/300",
-    features: ["LED Panels", "Color Backdrops", "Tripods & Stands", "Wi-Fi"],
-    size: "1000 sq ft",
-    capacity: "Up to 10 people"
+    features: ["Professional Audio", "Soundproofing", "Multi-mic Setup", "Recording Equipment"],
+    size: "Audio Production",
+    capacity: "Professional Grade",
+    type: "podcast"
   }
+];
+
+const equipmentList = [
+  { name: "Light Stand 9ft (Small)", qty: 6 },
+  { name: "Eimage LCS-03S 40\" C-Stand (Heavy Steel)", qty: 1 },
+  { name: "Eimage LCS-02 30\" C-Stand (Heavy Steel)", qty: 1 },
+  { name: "Eimage LCS-01 20\" C-Stand (Heavy Steel)", qty: 1 },
+  { name: "Godox C-Stand 270 CS", qty: 1 },
+  { name: "Manfrotto MK055XPRO3-BHQ2 Tripod with Ball Head", qty: 1 },
+  { name: "Garware Butter Paper Roll 40 inch × 18 mtr", qty: 1 },
+  { name: "Godox BDR-W55 Beauty Dish", qty: 1 },
+  { name: "Godox Standard Reflector RFT4", qty: 1 },
+  { name: "Godox SN01 Snoot with Honey Comb", qty: 2 },
+  { name: "Godox P120H Soft Box Deep Octa", qty: 1 },
+  { name: "Godox SFUV8080 Square Softbox for Bowens", qty: 2 },
+  { name: "Godox RFT-06-110110 All In One Reflector", qty: 2 },
+  { name: "Superior Backdrop Paper Roll 9ft × 36ft", qty: 3 },
+  { name: "Harison Wall Bracket with Chain Pulley Mechanism", qty: 1 },
+  { name: "Godox BDR-C550 Honey Comb Grid Set", qty: 1 },
+  { name: "Electric Board Big", qty: 2 },
+  { name: "Spikeguard", qty: 1 },
+  { name: "UPS", qty: 1 },
+  { name: "Apple Laptop MacBook Pro 16\"", qty: 1 },
+  { name: "Sony 7M3 Body Mirrorless Full Frame Camera", qty: 1 },
+  { name: "Sony SEL70200GM 70-200 F2.8 G-Master Lens", qty: 1 },
+  { name: "Sony SEL24105G 24-105mm F4 Lens", qty: 1 },
+  { name: "Sony SEL90M28G 90mm F2.0 Macro Lens", qty: 1 },
+  { name: "Sony SEL1635GM 16-35mm F2.8 G-Master Lens", qty: 1 },
+  { name: "Sony SEL50F18F 50mm F1.8 Lens", qty: 1 },
+  { name: "Transcend 1TB Shock Proof Hard Disk", qty: 1 },
+  { name: "Sony NP-FZ100 Battery for 7M3 Camera", qty: 2 },
+  { name: "Sandisk 32GB SD Card Extreme Pro 170 Mbps", qty: 2 },
+  { name: "Transcend All In One Card Reader TF-RDF8K2", qty: 1 },
+  { name: "Godox V1 Flash for Sony", qty: 1 },
+  { name: "Battery VB26 for Godox V1 Flash", qty: 1 },
+  { name: "Nisi CPL Filter 77mm", qty: 1 },
+  { name: "Godox X2 Trigger", qty: 1 },
+  { name: "Sekonic L308X Light Meter", qty: 1 },
+  { name: "Godox DP 600 III Kit", qty: 3 },
+  { name: "Godox BD-04 Barndoor Set", qty: 1 },
+  { name: "Godox Modeling Lamp ML-01", qty: 1 },
+  { name: "Godox Umbrella 35", qty: 1 },
+  { name: "Kamron Cleaning Kit / Photron Cleaning Kit", qty: 1 },
+  { name: "Andbon Dehumidifier 80 Ltrs / Photron Dry Cabinet", qty: 1 },
+  { name: "Vanguard Camera Bag", qty: 1 }
 ];
 
 const StudioCard = ({ studio, onClick }: { studio: any; onClick: () => void }) => (
@@ -81,7 +129,9 @@ const StudioCard = ({ studio, onClick }: { studio: any; onClick: () => void }) =
       <div className="flex items-center justify-between pt-1">
         <div className="flex items-center gap-2">
           <span className="font-display text-lg font-bold text-foreground">₹{studio.price}</span>
-          <span className="text-sm text-muted-foreground">/hour</span>
+          <span className="text-sm text-muted-foreground">
+            {studio.type === 'photo' ? '/hr' : studio.type === 'podcast' ? '/hr' : '/day'}
+          </span>
         </div>
         
         <div className="flex items-center gap-1 bg-secondary/10 rounded-full px-2 py-1">
@@ -226,6 +276,76 @@ const StudioRentals = () => {
                   <Clock className="h-4 w-4 text-orange-600" />
                 </div>
                 <span className="text-sm text-foreground">Flexible Hours</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Equipment List Section */}
+        <section className="px-4 pb-6">
+          <div className="rounded-3xl bg-card border border-border/50 p-6">
+            <h3 className="font-display text-lg font-bold text-foreground mb-4">Available Equipment</h3>
+            <p className="text-sm text-muted-foreground mb-4">Professional photography equipment included with studio rental</p>
+            
+            <div className="space-y-3 max-h-64 overflow-y-auto">
+              {equipmentList.map((item, index) => (
+                <div key={index} className="flex items-center justify-between py-2 border-b border-border/30 last:border-b-0">
+                  <span className="text-sm text-foreground flex-1 pr-2">{item.name}</span>
+                  <span className="text-xs bg-secondary/10 text-secondary px-2 py-1 rounded-full font-semibold">
+                    Qty: {item.qty}
+                  </span>
+                </div>
+              ))}
+            </div>
+            
+            <div className="mt-4 p-3 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl">
+              <h4 className="font-semibold text-emerald-800 dark:text-emerald-200 text-sm mb-1">Video Setup Available</h4>
+              <p className="text-xs text-emerald-700 dark:text-emerald-300">
+                • Chroma Green Screen Setup (Background replacement & creative productions)<br/>
+                • Professional Tripod for Stable Recording<br/>
+                • Hiffen 250W Continuous Light for consistent illumination
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Pricing Section */}
+        <section className="px-4 pb-6">
+          <div className="rounded-3xl bg-gradient-to-br from-secondary/10 to-primary/10 border border-border/50 p-6">
+            <h3 className="font-display text-lg font-bold text-foreground mb-4">Studio Pricing</h3>
+            
+            <div className="space-y-3">
+              <div className="flex items-center justify-between p-3 bg-card rounded-xl border border-border/30">
+                <div>
+                  <h4 className="font-semibold text-foreground">Photo Studio</h4>
+                  <p className="text-xs text-muted-foreground">Professional photography setup</p>
+                </div>
+                <div className="text-right">
+                  <span className="font-display text-lg font-bold text-foreground">₹1,000</span>
+                  <p className="text-xs text-muted-foreground">/hour</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center justify-between p-3 bg-card rounded-xl border border-border/30">
+                <div>
+                  <h4 className="font-semibold text-foreground">Video Studio</h4>
+                  <p className="text-xs text-muted-foreground">Attended setup with green screen</p>
+                </div>
+                <div className="text-right">
+                  <span className="font-display text-lg font-bold text-foreground">₹1,000</span>
+                  <p className="text-xs text-muted-foreground">/day</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center justify-between p-3 bg-card rounded-xl border border-border/30">
+                <div>
+                  <h4 className="font-semibold text-foreground">Podcast Studio</h4>
+                  <p className="text-xs text-muted-foreground">Professional audio recording</p>
+                </div>
+                <div className="text-right">
+                  <span className="font-display text-lg font-bold text-foreground">₹2,000</span>
+                  <p className="text-xs text-muted-foreground">/hour</p>
+                </div>
               </div>
             </div>
           </div>
