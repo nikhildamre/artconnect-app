@@ -302,6 +302,8 @@ export const useCreateProduct = () => {
       medium?: string;
       inventory: number;
       image_url?: string;
+      image_urls?: string[];
+      images?: string[];
     }) => {
       if (!user) throw new Error("Not authenticated");
       
@@ -313,6 +315,11 @@ export const useCreateProduct = () => {
           vendor_name: user.user_metadata?.display_name || user.email || "Artist",
           moderation_status: "pending",
           is_active: true,
+          // Use the first image as the main image_url if not provided
+          image_url: product.image_url || product.image_urls?.[0] || product.images?.[0],
+          // Store all images in both arrays for compatibility
+          image_urls: product.image_urls || product.images || [],
+          images: product.images || product.image_urls || [],
         });
       
       if (error) throw error;

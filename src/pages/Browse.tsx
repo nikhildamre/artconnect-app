@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { categories } from "@/data/mockData";
 import { useProducts, Product } from "@/hooks/useProducts";
-import { useImageForArtwork } from "@/hooks/useArtworkImages";
 import CategoryPill from "@/components/CategoryPill";
 import BottomNav from "@/components/BottomNav";
 
@@ -12,7 +11,8 @@ const formatPrice = (price: number) =>
   new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(price);
 
 const BrowseProductCard = ({ product, onClick, index }: { product: Product; onClick: () => void; index: number }) => {
-  const imageSrc = useImageForArtwork(product.images?.[0] || "");
+  // Use the actual uploaded image URL from the database
+  const imageSrc = product.image_url || product.images?.[0] || "/assets/art-painting-1-J34nQLiB.jpg";
 
   return (
     <motion.div
@@ -29,7 +29,12 @@ const BrowseProductCard = ({ product, onClick, index }: { product: Product; onCl
             src={imageSrc} 
             alt={product.title} 
             className="h-full w-full object-cover transition-all duration-700 group-hover:scale-110 group-hover:brightness-110" 
-            loading="lazy" 
+            loading="lazy"
+            onError={(e) => {
+              // Fallback to default image if uploaded image fails to load
+              const target = e.target as HTMLImageElement;
+              target.src = "/assets/art-painting-1-J34nQLiB.jpg";
+            }}
           />
         </div>
         
@@ -169,7 +174,7 @@ const Browse = () => {
             >
               <div className="px-4 py-4">
                 <h3 className="font-semibold text-foreground mb-3">Filter by Category</h3>
-                <div className="flex gap-2.5 overflow-x-auto pb-2 scrollbar-hide">
+                <div className="flex gap-2.5 overflow-x-auto pb-2 scrollbar-hide snap-x snap-mandatory">
                   <CategoryPill 
                     category={{ id: "all", name: "All", icon: "✨", count: 0 }} 
                     isActive={!activeCategory} 

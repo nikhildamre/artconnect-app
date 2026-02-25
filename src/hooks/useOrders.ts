@@ -12,7 +12,7 @@ export const useOrders = () => {
       const { data, error } = await supabase
         .from("orders")
         .select("*, order_items(*, products(*))")
-        .eq("customer_id", user.id)
+        .eq("user_id", user.id)
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data || [];
@@ -48,7 +48,7 @@ export const useCreateOrder = () => {
       const { data: order, error: orderError } = await supabase
         .from("orders")
         .insert({
-          customer_id: user.id,
+          user_id: user.id,
           subtotal,
           tax,
           shipping,

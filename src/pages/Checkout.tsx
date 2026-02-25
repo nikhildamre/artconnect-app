@@ -116,7 +116,7 @@ const Checkout = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background pb-32">
+    <div className="min-h-screen bg-background pb-20">
       <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur-lg">
         <div className="mx-auto max-w-lg px-4 py-3 flex items-center gap-3">
           <button onClick={() => navigate(-1)} className="rounded-full bg-card p-2"><ArrowLeft className="h-4 w-4 text-foreground" /></button>

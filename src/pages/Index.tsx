@@ -9,7 +9,6 @@ import studioRentalsImage from "@/assets/Services/Studio Rentals.png";
 import logo from "@/assets/logo.png";
 import { categories, artists } from "@/data/mockData";
 import { useProducts, Product } from "@/hooks/useProducts";
-import { useImageForArtwork } from "@/hooks/useArtworkImages";
 import ArtistCard from "@/components/ArtistCard";
 import CategoryPill from "@/components/CategoryPill";
 import BottomNav from "@/components/BottomNav";
@@ -62,7 +61,8 @@ const heroSlides = [
 ];
 
 const ProductCard = ({ product, onClick, index }: { product: Product; onClick: () => void; index: number }) => {
-  const imageSrc = useImageForArtwork(product.images?.[0] || "");
+  // Use the actual uploaded image URL from the database
+  const imageSrc = product.image_url || product.images?.[0] || "/assets/art-painting-1-J34nQLiB.jpg";
   const formatPrice = (price: number) =>
     new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(price);
 
@@ -81,7 +81,12 @@ const ProductCard = ({ product, onClick, index }: { product: Product; onClick: (
             src={imageSrc} 
             alt={product.title} 
             className="h-full w-full object-cover transition-all duration-700 group-hover:scale-110 group-hover:brightness-110" 
-            loading="lazy" 
+            loading="lazy"
+            onError={(e) => {
+              // Fallback to default image if uploaded image fails to load
+              const target = e.target as HTMLImageElement;
+              target.src = "/assets/art-painting-1-J34nQLiB.jpg";
+            }}
           />
         </div>
         
@@ -341,8 +346,8 @@ const Index = () => {
               View All <ChevronRight className="h-4 w-4" />
             </button>
           </div>
-          <div className="overflow-hidden px-4 pb-4">
-            <div className="flex gap-4 animate-scroll">
+          <div className="overflow-x-auto px-4 pb-4 scrollbar-hide">
+            <div className="flex gap-4 animate-scroll snap-x snap-mandatory">
               {[...categories, ...categories].map((cat, index) => (
                 <motion.button
                   key={`${cat.id}-${index}`}
@@ -351,7 +356,7 @@ const Index = () => {
                     setActiveCategory(activeCategory === cat.id ? null : cat.id);
                     navigate("/browse");
                   }}
-                  className={`flex shrink-0 items-center gap-3 rounded-2xl px-5 py-4 text-sm transition-all duration-300 min-w-fit ${
+                  className={`flex shrink-0 items-center gap-3 rounded-2xl px-5 py-4 text-sm transition-all duration-300 min-w-fit snap-start ${
                     activeCategory === cat.id
                       ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg"
                       : "bg-card text-foreground border border-border hover:border-secondary/50 hover:shadow-sm"

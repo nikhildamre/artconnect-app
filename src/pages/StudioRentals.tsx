@@ -4,6 +4,11 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import BottomNav from "@/components/BottomNav";
 
+// Import actual studio images
+import photographyStudioImage from "@/assets/Services/Photography Studio Artvpp.jpg";
+import videoStudioImage from "@/assets/Services/Video Studio Artvpp.jpg";
+import podcastStudioImage from "@/assets/Services/Podcast Studio Artvpp.png";
+
 const studios = [
   {
     id: 1,
@@ -12,7 +17,7 @@ const studios = [
     price: 1000,
     rating: 4.9,
     reviews: 89,
-    image: "/api/placeholder/400/300",
+    image: photographyStudioImage,
     features: ["Professional Lighting", "Sony Camera Equipment", "Multiple Backdrops", "Editing Station"],
     size: "Professional Grade",
     capacity: "Full Day Setup",
@@ -25,7 +30,7 @@ const studios = [
     price: 1000,
     rating: 4.8,
     reviews: 124,
-    image: "/api/placeholder/400/300",
+    image: videoStudioImage,
     features: ["Chroma Green Screen", "Professional Tripod", "Continuous Lighting", "Background Replacement"],
     size: "Video Production",
     capacity: "Attended Setup",
@@ -38,7 +43,7 @@ const studios = [
     price: 2000,
     rating: 4.9,
     reviews: 67,
-    image: "/api/placeholder/400/300",
+    image: podcastStudioImage,
     features: ["Professional Audio", "Soundproofing", "Multi-mic Setup", "Recording Equipment"],
     size: "Audio Production",
     capacity: "Professional Grade",
@@ -101,9 +106,12 @@ const StudioCard = ({ studio, onClick }: { studio: any; onClick: () => void }) =
   >
     <div className="relative overflow-hidden rounded-3xl shadow-art bg-card border border-border/50 hover:border-secondary/50 transition-all duration-300">
       <div className="aspect-[4/3] overflow-hidden">
-        <div className="h-full w-full bg-gradient-to-br from-emerald-100 to-teal-100 dark:from-emerald-900/20 dark:to-teal-900/20 flex items-center justify-center">
-          <Camera className="h-16 w-16 text-emerald-500" />
-        </div>
+        <img 
+          src={studio.image} 
+          alt={studio.name}
+          className="h-full w-full object-cover transition-all duration-700 group-hover:scale-110 group-hover:brightness-110"
+          loading="lazy"
+        />
       </div>
       
       {/* Gradient Overlay */}

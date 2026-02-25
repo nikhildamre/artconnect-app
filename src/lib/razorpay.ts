@@ -71,6 +71,20 @@ export const initiateRazorpayPayment = async (
   onFailure: () => void
 ) => {
   try {
+    // Check for demo mode
+    const demoMode = import.meta.env.VITE_DEMO_MODE === "true";
+    if (demoMode) {
+      // Simulate successful payment in demo mode
+      setTimeout(() => {
+        onSuccess({
+          razorpay_payment_id: `demo_${Date.now()}`,
+          razorpay_order_id: `order_demo_${Date.now()}`,
+          razorpay_signature: "demo_signature"
+        });
+      }, 2000);
+      return;
+    }
+
     const isLoaded = await loadRazorpayScript();
     
     if (!isLoaded) {
@@ -89,6 +103,7 @@ export const initiateRazorpayPayment = async (
 
     const order = await createRazorpayOrder(amount);
 
+    // Simplified options without complex configuration
     const options: RazorpayOptions = {
       key: razorpayKey,
       amount: order.amount,
@@ -97,13 +112,12 @@ export const initiateRazorpayPayment = async (
       description: orderDetails.description,
       order_id: order.id,
       handler: (response) => {
-        // Payment successful
         console.log('Payment Success:', response);
         onSuccess(response);
       },
       prefill: orderDetails.prefill,
       theme: {
-        color: '#9E4A5A' // Your app's primary color
+        color: '#9E4A5A'
       },
       modal: {
         ondismiss: () => {
@@ -117,7 +131,6 @@ export const initiateRazorpayPayment = async (
     
     const razorpay = new window.Razorpay(options);
     
-    // Add error handling for Razorpay initialization
     razorpay.on('payment.failed', function (response: any) {
       console.error('Payment failed:', response.error);
       onFailure();

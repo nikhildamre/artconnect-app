@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ArrowRight, Clock, Users, Star, MapPin, Calendar, Award, Palette, Camera, Lightbulb, ChevronLeft, ChevronRight, CreditCard, HelpCircle } from "lucide-react";
+import { ArrowRight, Clock, Users, Star, Award, ChevronLeft, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import BottomNav from "@/components/BottomNav";
@@ -8,6 +8,9 @@ import BottomNav from "@/components/BottomNav";
 import workshopsImage from "@/assets/Services/Art Workshops.png";
 import customArtImage from "@/assets/Services/Custom Art.png";
 import studioRentalsImage from "@/assets/Services/Studio Rentals.png";
+import photographyStudioImage from "@/assets/Services/Photography Studio Artvpp.jpg";
+import videoStudioImage from "@/assets/Services/Video Studio Artvpp.jpg";
+import podcastStudioImage from "@/assets/Services/Podcast Studio Artvpp.png";
 
 const carouselServices = [
   {
@@ -34,10 +37,10 @@ const carouselServices = [
   },
   {
     id: "studios",
-    title: "Photography Studio Rentals",
+    title: "Studio Rentals",
     subtitle: "Professional Photography & Video Spaces",
     description: "Rent fully equipped studios with professional Sony cameras, lighting, green screen setup, and complete equipment for photography, video, and podcast production.",
-    image: studioRentalsImage,
+    image: photographyStudioImage, // Use actual photography studio image
     gradient: "from-emerald-500 via-teal-500 to-cyan-500",
     price: "₹1,000",
     priceLabel: "per hour",
@@ -74,7 +77,7 @@ const services = [
   },
   {
     id: "studios",
-    title: "Photography Studio Rentals",
+    title: "Studio Rentals",
     subtitle: "Professional Photography & Video Spaces",
     description: "Rent fully equipped studios with professional Sony cameras, lighting, green screen setup, and complete equipment for photography, video, and podcast production.",
     icon: "📸",
@@ -289,8 +292,6 @@ const ServiceCard = ({ service, index }: { service: any; index: number }) => {
 };
 
 const Services = () => {
-  const navigate = useNavigate();
-
   return (
     <div className="min-h-[100dvh] bg-background pb-20 mx-auto max-w-lg">
       {/* Header */}

@@ -196,51 +196,65 @@ export type Database = {
       }
       orders: {
         Row: {
+          billing_address: Json | null
           created_at: string
-          customer_id: string
           id: string
+          notes: string | null
           payment_id: string | null
           payment_method: string | null
-          shipping: number
+          payment_status: string | null
+          shipping: number | null
           shipping_address: Json | null
-          status: string
-          subtotal: number
-          tax: number
+          status: string | null
+          subtotal: number | null
+          tax: number | null
           total: number
-          tracking_number: string | null
           updated_at: string
+          user_id: string
         }
         Insert: {
+          billing_address?: Json | null
           created_at?: string
-          customer_id: string
           id?: string
+          notes?: string | null
           payment_id?: string | null
           payment_method?: string | null
-          shipping?: number
+          payment_status?: string | null
+          shipping?: number | null
           shipping_address?: Json | null
-          status?: string
-          subtotal?: number
-          tax?: number
-          total?: number
-          tracking_number?: string | null
+          status?: string | null
+          subtotal?: number | null
+          tax?: number | null
+          total: number
           updated_at?: string
+          user_id: string
         }
         Update: {
+          billing_address?: Json | null
           created_at?: string
-          customer_id?: string
           id?: string
+          notes?: string | null
           payment_id?: string | null
           payment_method?: string | null
-          shipping?: number
+          payment_status?: string | null
+          shipping?: number | null
           shipping_address?: Json | null
-          status?: string
-          subtotal?: number
-          tax?: number
+          status?: string | null
+          subtotal?: number | null
+          tax?: number | null
           total?: number
-          tracking_number?: string | null
           updated_at?: string
+          user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "orders_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       products: {
         Row: {

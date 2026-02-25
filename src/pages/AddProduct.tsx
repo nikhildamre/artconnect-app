@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { ArrowLeft, Plus, Eye, EyeOff, Trash2, Edit2, Image as ImageIcon } from "lucide-react";
+import { ArrowLeft, Plus, Eye, EyeOff, Trash2, Edit2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import { useVendorProducts, useCreateProduct, useUpdateProduct, useDeleteProduct } from "@/hooks/useVendor";
 import { toast } from "sonner";
 import BottomNav from "@/components/BottomNav";
+import ImageUpload from "@/components/ImageUpload";
 
 const formatPrice = (price: number) =>
   new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(price);
@@ -19,10 +20,16 @@ const AddProduct = () => {
   const deleteProductMutation = useDeleteProduct();
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ title: "", description: "", price: "", category: "Paintings", medium: "", inventory: "1" });
+  const [productImages, setProductImages] = useState<string[]>([]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
+    
+    if (productImages.length === 0) {
+      toast.error("Please upload at least one image");
+      return;
+    }
     
     try {
       await createProduct.mutateAsync({
@@ -32,9 +39,12 @@ const AddProduct = () => {
         category: form.category,
         medium: form.medium,
         inventory: Number(form.inventory),
+        images: productImages,
+        image_url: productImages[0], // First image as main image
       });
       
       setForm({ title: "", description: "", price: "", category: "Paintings", medium: "", inventory: "1" });
+      setProductImages([]);
       setShowForm(false);
       toast.success("Product added successfully! It will be reviewed by admin.");
     } catch (error) {
@@ -91,9 +101,12 @@ const AddProduct = () => {
               <h3 className="font-display text-sm font-bold text-foreground">Add New Product</h3>
               <input type="text" placeholder="Product Title *" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className="w-full rounded-lg border border-border bg-background py-2.5 px-3 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:border-secondary" required />
               <textarea placeholder="Description" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={3} className="w-full rounded-lg border border-border bg-background py-2.5 px-3 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:border-secondary resize-none" />
-              <button type="button" className="flex w-full items-center justify-center gap-2 rounded-lg border-2 border-dashed border-border py-6 text-sm text-muted-foreground hover:border-secondary transition-all">
-                <ImageIcon className="h-5 w-5" /> Upload Images
-              </button>
+              
+              <ImageUpload 
+                images={productImages}
+                onImagesChange={setProductImages}
+                maxImages={5}
+              />
               <div className="grid grid-cols-2 gap-3">
                 <input type="number" placeholder="Price (₹) *" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} className="rounded-lg border border-border bg-background py-2.5 px-3 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:border-secondary" required />
                 <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className="rounded-lg border border-border bg-background py-2.5 px-3 text-sm text-foreground outline-none focus:border-secondary">
@@ -120,7 +133,17 @@ const AddProduct = () => {
           <div className="space-y-2">
               {(products || []).map((product) => (
                 <motion.div key={product.id} layout className="flex items-center gap-3 rounded-xl border border-border bg-card p-3">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-muted text-xl">🎨</div>
+                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-muted overflow-hidden">
+                    {product.image_url || product.images?.[0] ? (
+                      <img 
+                        src={product.image_url || product.images?.[0]} 
+                        alt={product.title}
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <span className="text-xl">🎨</span>
+                    )}
+                  </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-foreground truncate">{product.title}</p>
                     <div className="flex items-center gap-2 mt-0.5">

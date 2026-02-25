@@ -5,7 +5,6 @@ import { motion } from "framer-motion";
 import { useProduct } from "@/hooks/useProducts";
 import { useAddToCart } from "@/hooks/useCart";
 import { useAuth } from "@/contexts/AuthContext";
-import { useImageForArtwork } from "@/hooks/useArtworkImages";
 import { useRazorpay } from "@/hooks/useRazorpay";
 import BottomNav from "@/components/BottomNav";
 import { toast } from "sonner";
@@ -21,7 +20,7 @@ const ArtworkDetail = () => {
   const { data: product, isLoading } = useProduct(id);
   const addToCart = useAddToCart();
   const { processPayment, isProcessing } = useRazorpay();
-  const imageSrc = useImageForArtwork(product?.images?.[0] || "");
+  const imageSrc = product?.image_url || product?.images?.[0] || "/assets/art-painting-1-J34nQLiB.jpg";
 
   const handleAddToCart = () => {
     if (!user) {
@@ -95,7 +94,7 @@ const ArtworkDetail = () => {
   const dimensionStr = dims ? `${dims.width}" × ${dims.height}"${dims.depth ? ` × ${dims.depth}"` : ""}` : "";
 
   return (
-    <div className="min-h-[100dvh] bg-background pb-36 mx-auto max-w-lg">
+    <div className="min-h-[100dvh] bg-background pb-20 mx-auto max-w-lg">
       {/* Image Section */}
       <div className="relative">
         <motion.img initial={{ opacity: 0 }} animate={{ opacity: 1 }} src={imageSrc} alt={product.title} className="aspect-[4/3] w-full object-cover" />
