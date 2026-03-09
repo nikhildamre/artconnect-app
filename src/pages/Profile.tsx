@@ -6,7 +6,6 @@ import { useProfile } from "@/hooks/useProfile";
 import { useIsAdmin, useIsVendor } from "@/hooks/useAdmin";
 import { toast } from "sonner";
 import BottomNav from "@/components/BottomNav";
-import ProfileDebug from "@/components/ProfileDebug";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -78,11 +77,8 @@ const Profile = () => {
               {user ? (
                 <>
                   <h2 className="font-display text-xl font-bold text-foreground">
-                    {profile?.display_name || user.user_metadata?.display_name || "Art Enthusiast"}
+                    {profile?.display_name || user.user_metadata?.display_name || user.email?.split('@')[0] || "Art Enthusiast"}
                   </h2>
-                  {profile?.username && (
-                    <p className="text-sm text-muted-foreground">@{profile.username}</p>
-                  )}
                   <p className="text-sm text-muted-foreground">{user.email}</p>
                   {profile?.location && (
                     <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
@@ -113,13 +109,6 @@ const Profile = () => {
               </p>
             </div>
           </div>
-
-          {/* Debug Info - Remove in production */}
-          {user && (
-            <div className="mb-4">
-              <ProfileDebug />
-            </div>
-          )}
         </div>
 
         {!user && (

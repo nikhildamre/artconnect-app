@@ -91,7 +91,13 @@ const ProfileEditSimple = () => {
         updateData.avatar_url = profileImage;
       }
 
+      console.log("User:", user);
       console.log("Updating profile with:", updateData);
+      
+      if (Object.keys(updateData).length === 0) {
+        toast.error("Please make some changes before saving");
+        return;
+      }
       
       await updateProfile.mutateAsync(updateData);
       
@@ -99,7 +105,26 @@ const ProfileEditSimple = () => {
       navigate("/profile");
     } catch (error) {
       console.error("Profile update error:", error);
-      toast.error("Failed to update profile. Please try again.");
+      
+      // Better error handling
+      let errorMessage = "Failed to update profile. Please try again.";
+      
+      if (error instanceof Error) {
+        errorMessage = error.message;
+        console.error("Error message:", error.message);
+        console.error("Error stack:", error.stack);
+      } else if (typeof error === 'object' && error !== null) {
+        // Handle Supabase errors
+        const supabaseError = error as any;
+        console.error("Supabase error:", supabaseError);
+        if (supabaseError.message) {
+          errorMessage = supabaseError.message;
+        } else if (supabaseError.error_description) {
+          errorMessage = supabaseError.error_description;
+        }
+      }
+      
+      toast.error(errorMessage);
     }
   };
 

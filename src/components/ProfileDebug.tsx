@@ -14,7 +14,11 @@ const ProfileDebug = () => {
   }
 
   if (error) {
-    return <div className="p-4 bg-red-100 text-red-800 rounded">Error: {String(error)}</div>;
+    return (
+      <div className="p-4 bg-red-100 text-red-800 rounded">
+        <strong>Error:</strong> {error instanceof Error ? error.message : JSON.stringify(error)}
+      </div>
+    );
   }
 
   return (
@@ -24,8 +28,8 @@ const ProfileDebug = () => {
         <div><strong>User ID:</strong> {user.id}</div>
         <div><strong>User Email:</strong> {user.email}</div>
         <div><strong>Profile Data:</strong></div>
-        <pre className="bg-white p-2 rounded text-xs overflow-auto">
-          {JSON.stringify(profile, null, 2)}
+        <pre className="bg-white p-2 rounded text-xs overflow-auto max-h-40">
+          {profile ? JSON.stringify(profile, null, 2) : "No profile data"}
         </pre>
       </div>
     </div>

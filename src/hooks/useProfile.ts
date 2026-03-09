@@ -28,10 +28,18 @@ export const useUpdateProfile = () => {
   return useMutation({
     mutationFn: async (updates: { display_name?: string; bio?: string; location?: string; phone_number?: string; avatar_url?: string }) => {
       if (!user) throw new Error("Not authenticated");
+      
+      // Use upsert to handle both insert and update cases
       const { error } = await supabase
         .from("profiles")
-        .update(updates)
-        .eq("user_id", user.id);
+        .upsert({
+          user_id: user.id,
+          ...updates,
+          updated_at: new Date().toISOString()
+        }, {
+          onConflict: 'user_id'
+        });
+      
       if (error) throw error;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["profile"] }),
