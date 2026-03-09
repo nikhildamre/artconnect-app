@@ -11,12 +11,16 @@ import ArtworkDetail from "./pages/ArtworkDetail";
 import Cart from "./pages/Cart";
 import Wishlist from "./pages/Wishlist";
 import Profile from "./pages/Profile";
+import ProfileEdit from "./pages/ProfileEdit";
+import ChangePassword from "./pages/ChangePassword";
+import Addresses from "./pages/Addresses";
 import Auth from "./pages/Auth";
 import AuthCallback from "./pages/AuthCallback";
 import Workshops from "./pages/Workshops";
 import Commissions from "./pages/Commissions";
 import Services from "./pages/Services";
 import StudioRentals from "./pages/StudioRentals";
+import Calligraphy from "./pages/Calligraphy";
 import VendorDashboard from "./pages/VendorDashboard";
 import Checkout from "./pages/Checkout";
 import Orders from "./pages/Orders";
@@ -50,12 +54,16 @@ const App = () => (
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/wishlist" element={<Wishlist />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/profile/edit" element={<ProfileEdit />} />
+            <Route path="/settings/change-password" element={<ChangePassword />} />
+            <Route path="/settings/addresses" element={<Addresses />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/auth/callback" element={<AuthCallback />} />
             <Route path="/workshops" element={<Workshops />} />
             <Route path="/commissions" element={<Commissions />} />
             <Route path="/services" element={<Services />} />
             <Route path="/studio-rentals" element={<StudioRentals />} />
+            <Route path="/calligraphy" element={<Calligraphy />} />
             <Route path="/apply-seller" element={<ApplySeller />} />
             <Route path="/vendor" element={<ProtectedRoute requiredRole="vendor"><VendorDashboard /></ProtectedRoute>} />
             <Route path="/vendor/products" element={<ProtectedRoute requiredRole="vendor"><AddProduct /></ProtectedRoute>} />

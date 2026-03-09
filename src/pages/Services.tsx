@@ -25,6 +25,17 @@ const carouselServices = [
     route: "/workshops"
   },
   {
+    id: "calligraphy",
+    title: "Custom Calligraphy Name Art",
+    subtitle: "Elegant Personalized Wall Décor",
+    description: "Get your name beautifully designed in artistic calligraphy and framed as elegant wall décor. Perfect for home, office, or gifts.",
+    image: customArtImage, // Will use custom art image for now
+    gradient: "from-rose-500 via-pink-500 to-purple-600",
+    price: "₹1,499",
+    priceLabel: "onwards",
+    route: "/calligraphy"
+  },
+  {
     id: "commissions",
     title: "Custom Art Commissions",
     subtitle: "Bring Your Vision to Life",
@@ -61,6 +72,19 @@ const services = [
     features: ["Live Sessions", "Certificate", "Materials Included", "Lifetime Access"],
     stats: { students: "Popular", rating: "4.9", courses: "Expert" },
     route: "/workshops"
+  },
+  {
+    id: "calligraphy",
+    title: "Custom Calligraphy Name Art",
+    subtitle: "Elegant Personalized Wall Décor",
+    description: "Get your name beautifully designed in artistic calligraphy and framed as elegant wall décor. Perfect for home décor, gifts, office desks, or personalized nameplates.",
+    icon: "✒️",
+    gradient: "from-rose-500 via-pink-500 to-purple-600",
+    price: "₹1,499",
+    priceLabel: "onwards",
+    features: ["Gothic & Modern Fonts", "Premium Frames", "Custom Sizes", "Gift Packaging"],
+    stats: { styles: "10+", frames: "Premium", delivery: "7 Days" },
+    route: "/calligraphy"
   },
   {
     id: "commissions",
