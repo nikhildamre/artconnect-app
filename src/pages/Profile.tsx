@@ -6,6 +6,7 @@ import { useProfile } from "@/hooks/useProfile";
 import { useIsAdmin, useIsVendor } from "@/hooks/useAdmin";
 import { toast } from "sonner";
 import BottomNav from "@/components/BottomNav";
+import ProfileDebug from "@/components/ProfileDebug";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -104,24 +105,19 @@ const Profile = () => {
             </div>
           )}
 
-          {profile?.interests && profile.interests.length > 0 && (
+          {/* Future features placeholder */}
+          <div className="mb-4">
+            <div className="rounded-xl bg-muted/30 p-4 text-center">
+              <p className="text-xs text-muted-foreground">
+                More profile features like interests and preferences coming soon!
+              </p>
+            </div>
+          </div>
+
+          {/* Debug Info - Remove in production */}
+          {user && (
             <div className="mb-4">
-              <h3 className="text-sm font-semibold text-foreground mb-2">Interests</h3>
-              <div className="flex flex-wrap gap-2">
-                {profile.interests.slice(0, 4).map((interest, index) => (
-                  <span
-                    key={index}
-                    className="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium"
-                  >
-                    {interest}
-                  </span>
-                ))}
-                {profile.interests.length > 4 && (
-                  <span className="px-3 py-1 rounded-full bg-muted text-muted-foreground text-xs font-medium">
-                    +{profile.interests.length - 4} more
-                  </span>
-                )}
-              </div>
+              <ProfileDebug />
             </div>
           )}
         </div>

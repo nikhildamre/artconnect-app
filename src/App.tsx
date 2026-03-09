@@ -11,7 +11,7 @@ import ArtworkDetail from "./pages/ArtworkDetail";
 import Cart from "./pages/Cart";
 import Wishlist from "./pages/Wishlist";
 import Profile from "./pages/Profile";
-import ProfileEdit from "./pages/ProfileEdit";
+import ProfileEdit from "./pages/ProfileEditSimple";
 import ChangePassword from "./pages/ChangePassword";
 import Addresses from "./pages/Addresses";
 import Auth from "./pages/Auth";

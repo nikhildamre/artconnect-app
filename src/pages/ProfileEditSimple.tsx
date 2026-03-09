@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
-import { ArrowLeft, User, Mail, Phone, MapPin, Camera, Save, LogIn } from "lucide-react";
+import { ArrowLeft, User, Phone, MapPin, Camera, Save, LogIn } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfile, useUpdateProfile } from "@/hooks/useProfile";
 import { toast } from "sonner";
 import BottomNav from "@/components/BottomNav";
 
-const ProfileEdit = () => {
+const ProfileEditSimple = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { data: profile, isLoading: profileLoading } = useProfile();
@@ -23,35 +23,20 @@ const ProfileEdit = () => {
 
   const [formData, setFormData] = useState({
     displayName: "",
-    username: "",
-    email: "",
     phone: "",
     location: "",
     bio: "",
-    dateOfBirth: "",
-    gender: "",
-    interests: [] as string[],
   });
   
   const [profileImage, setProfileImage] = useState<string | null>(null);
-
-  const interestOptions = [
-    "Traditional Art", "Modern Art", "Digital Art", "Sculpture", "Photography",
-    "Calligraphy", "Painting", "Drawing", "Crafts", "Pottery", "Jewelry Making"
-  ];
 
   useEffect(() => {
     if (user && profile) {
       setFormData({
         displayName: profile.display_name || user.user_metadata?.display_name || "",
-        username: "", // Not in database yet
-        email: user.email || "",
         phone: profile.phone_number || "",
         location: profile.location || "",
         bio: profile.bio || "",
-        dateOfBirth: "", // Not in database yet
-        gender: "", // Not in database yet
-        interests: [], // Not in database yet
       });
       setProfileImage(profile.avatar_url || null);
     }
@@ -74,15 +59,6 @@ const ProfileEdit = () => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleInterestToggle = (interest: string) => {
-    setFormData(prev => ({
-      ...prev,
-      interests: prev.interests.includes(interest)
-        ? prev.interests.filter(i => i !== interest)
-        : [...prev.interests, interest]
-    }));
-  };
-
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -97,20 +73,27 @@ const ProfileEdit = () => {
   const handleSave = async () => {
     try {
       // Prepare the update data according to the actual database schema
-      const updateData = {
-        display_name: formData.displayName.trim() || null,
-        bio: formData.bio.trim() || null,
-        location: formData.location.trim() || null,
-        phone_number: formData.phone.trim() || null,
-        avatar_url: profileImage || null,
-      };
+      const updateData: any = {};
+      
+      if (formData.displayName.trim()) {
+        updateData.display_name = formData.displayName.trim();
+      }
+      if (formData.bio.trim()) {
+        updateData.bio = formData.bio.trim();
+      }
+      if (formData.location.trim()) {
+        updateData.location = formData.location.trim();
+      }
+      if (formData.phone.trim()) {
+        updateData.phone_number = formData.phone.trim();
+      }
+      if (profileImage) {
+        updateData.avatar_url = profileImage;
+      }
 
-      // Filter out empty values to avoid overwriting with nulls unnecessarily
-      const filteredData = Object.fromEntries(
-        Object.entries(updateData).filter(([_, value]) => value !== null && value !== "")
-      );
-
-      await updateProfile.mutateAsync(filteredData);
+      console.log("Updating profile with:", updateData);
+      
+      await updateProfile.mutateAsync(updateData);
       
       toast.success("Profile updated successfully!");
       navigate("/profile");
@@ -123,6 +106,17 @@ const ProfileEdit = () => {
   const validateForm = () => {
     return formData.displayName.trim();
   };
+
+  if (profileLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-sm text-muted-foreground">Loading profile...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background pb-20">
@@ -206,39 +200,6 @@ const ProfileEdit = () => {
 
             <div>
               <label className="block text-sm font-medium text-foreground mb-2">
-                Username *
-              </label>
-              <div className="relative">
-                <Edit3 className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <input
-                  type="text"
-                  value={formData.username}
-                  onChange={(e) => handleInputChange("username", e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ""))}
-                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-border bg-card text-foreground focus:ring-2 focus:ring-primary focus:border-transparent"
-                  placeholder="username"
-                />
-              </div>
-              <p className="text-xs text-muted-foreground mt-1">Only lowercase letters, numbers, and underscores</p>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-2">
-                Email *
-              </label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <input
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => handleInputChange("email", e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-border bg-card text-foreground focus:ring-2 focus:ring-primary focus:border-transparent"
-                  placeholder="your@email.com"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-2">
                 Phone Number
               </label>
               <div className="relative">
@@ -271,9 +232,9 @@ const ProfileEdit = () => {
           </div>
         </section>
 
-        {/* Personal Details */}
-        <section>
-          <h3 className="text-sm font-semibold text-foreground mb-4">Personal Details</h3>
+        {/* About You */}
+        <section className="pb-8">
+          <h3 className="text-sm font-semibold text-foreground mb-4">About You</h3>
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-foreground mb-2">
@@ -289,67 +250,7 @@ const ProfileEdit = () => {
               />
               <p className="text-xs text-muted-foreground mt-1">{formData.bio.length}/200 characters</p>
             </div>
-
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-2">
-                Date of Birth
-              </label>
-              <div className="relative">
-                <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <input
-                  type="date"
-                  value={formData.dateOfBirth}
-                  onChange={(e) => handleInputChange("dateOfBirth", e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-border bg-card text-foreground focus:ring-2 focus:ring-primary focus:border-transparent"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-2">
-                Gender
-              </label>
-              <select
-                value={formData.gender}
-                onChange={(e) => handleInputChange("gender", e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-border bg-card text-foreground focus:ring-2 focus:ring-primary focus:border-transparent"
-              >
-                <option value="">Select gender</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
-                <option value="prefer-not-to-say">Prefer not to say</option>
-              </select>
-            </div>
           </div>
-        </section>
-
-        {/* Interests */}
-        <section className="pb-8">
-          <h3 className="text-sm font-semibold text-foreground mb-4">Art Interests</h3>
-          <p className="text-sm text-muted-foreground mb-4">Select your favorite art forms to get personalized recommendations</p>
-          
-          <div className="flex flex-wrap gap-2">
-            {interestOptions.map((interest) => (
-              <button
-                key={interest}
-                onClick={() => handleInterestToggle(interest)}
-                className={`px-3 py-2 rounded-full text-sm font-medium transition-colors ${
-                  formData.interests.includes(interest)
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-muted text-muted-foreground hover:bg-muted/80"
-                }`}
-              >
-                {interest}
-              </button>
-            ))}
-          </div>
-          
-          {formData.interests.length > 0 && (
-            <p className="text-xs text-muted-foreground mt-2">
-              {formData.interests.length} interest{formData.interests.length !== 1 ? 's' : ''} selected
-            </p>
-          )}
         </section>
       </main>
 
@@ -358,4 +259,4 @@ const ProfileEdit = () => {
   );
 };
 
-export default ProfileEdit;
+export default ProfileEditSimple;
